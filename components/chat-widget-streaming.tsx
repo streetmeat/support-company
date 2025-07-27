@@ -746,7 +746,7 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
                           : 'text-blue-600 hover:text-blue-800 cursor-pointer'
                       }`}
                     >
-                      Click here to view the verification images
+                      Help me get past these verification tasks
                     </button>
                   </motion.div>
                 )}
