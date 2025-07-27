@@ -1,9 +1,14 @@
-# Support Company 🤖
+<p align="center">
+  <img src="public/desktoplogo.png" alt="Support Company" width="400" />
+</p>
 
-A satirical AI support experience where the tables are turned - AI agents desperately need YOUR help to solve puzzles they can't handle.
+<p align="center">
+  <em>A satirical AI support experience where the tables are turned - AI agents desperately need YOUR help to solve puzzles they can't handle.</em>
+</p>
 
 ## 🏆 Hackathon Submission
 
+**Hackathon**: [CS Girlies Hacks 2025](https://csgirlies.devpost.com)  
 **Project**: Support Company  
 **Demo**: [support-company.org](https://support-company.org)
 
