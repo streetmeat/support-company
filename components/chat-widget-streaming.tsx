@@ -340,48 +340,46 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
       newState.storyProgress = 100; // Force progression
     }
     
-    // Check if this is a message that should show the link (very permissive)
+    // Check if agent has explicitly asked for help
+    const hasAskedForHelp = (
+      lowerContent.includes('can you help') ||
+      lowerContent.includes('help me') ||
+      lowerContent.includes('i need your help') ||
+      lowerContent.includes('need your help') ||
+      lowerContent.includes('please help') ||
+      (lowerContent.includes('help') && lowerContent.includes('?'))
+    );
+    
+    // Check if this is a message that should show the link
     const shouldShowLink = (
       lowerContent.includes('here') || 
       lowerContent.includes('these') || 
       lowerContent.includes('stuck on') ||
       lowerContent.includes('let me') ||
-      lowerContent.includes('what i') ||
       lowerContent.includes('show you') ||
-      (lowerContent.includes('thank') && assistantMessageCount > 2) // Grateful response after help offer
+      lowerContent.includes('look at') ||
+      lowerContent.includes('what i mean')
     );
+    
+    // Track if agent has asked for help
+    if (hasAskedForHelp) {
+      newState.hasAskedForHelp = true;
+    }
     
     setConversationState(newState);
     
-    // Check if user has engaged at all (any response shows minimal engagement)
-    const userMessages = messages.filter(m => m.role === 'user');
-    const lastUserMessage = userMessages[userMessages.length - 1]?.content?.toLowerCase() || '';
-    
-    // User shows any engagement (very low bar)
-    const userEngaged = userHasResponded && (
-      lastUserMessage.length > 0 || // Any response counts
-      lastUserMessage.includes('ok') || 
-      lastUserMessage.includes('what') ||
-      lastUserMessage.includes('?') ||
-      lastUserMessage.includes('sure') ||
-      lastUserMessage.includes('fine') ||
-      lastUserMessage.includes('help')
-    );
-    
-    // Force link showing by message 7
+    // Force link showing by message 5 (after help request) or message 7 (regardless)
+    const forceShowAfterHelp = newState.hasAskedForHelp && assistantMessageCount >= 4 && !showingButton && !puzzleStarted;
     const forceShowAtMessage7 = assistantMessageCount >= 6 && !showingButton && !puzzleStarted;
     
-    // Balanced link showing:
-    // Show link when narrative has developed AND agent is ready to share
-    // Typically around message 4-6 when agent asks for help
-    // FORCE show by message 7 regardless
+    // Show link when:
+    // 1. Agent has asked for help AND is now showing what they need help with
+    // 2. OR force show by message 7
     if (!showingButton && !puzzleStarted && !linkMessageId &&
-        ((userHasResponded && newState.hasAskedForHelp && shouldShowLink &&
-        assistantMessageCount >= 4) || forceShowAtMessage7)) {
+        ((newState.hasAskedForHelp && shouldShowLink) || forceShowAfterHelp || forceShowAtMessage7)) {
       console.log('Setting showing button to true!', { 
         hasRevealedProblem: newState.hasRevealedProblem,
         hasAskedForHelp: newState.hasAskedForHelp, 
-        userEngaged, 
         shouldShowLink,
         assistantMessageCount 
       });
@@ -681,39 +679,6 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, currentStreamingMessage]);
   
-  // Check if we should show the button based on current messages
-  useEffect(() => {
-    // Skip if button already showing
-    if (showingButton) return;
-    
-    // Check if user has offered help
-    const userMessages = messages.filter(m => m.role === 'user');
-    const assistantMessages = messages.filter(m => m.role === 'assistant');
-    
-    // Allow button to show even without user engagement after enough time
-    if (userMessages.length === 0 && assistantMessages.length < 4) return; // Wait for panic messages
-    
-    // Check last user message for help offer
-    const lastUserMessage = userMessages[userMessages.length - 1]?.content?.toLowerCase() || '';
-    const userOfferedHelp = 
-      lastUserMessage.includes('help') || 
-      lastUserMessage.includes('ok') || 
-      lastUserMessage.includes('what') ||
-      lastUserMessage.includes('do');
-    
-    // Check if any recent assistant message has the link context
-    const recentAssistantMessages = assistantMessages.slice(-3); // Last 3 messages
-    const hasLinkContext = recentAssistantMessages.some(msg => {
-      const content = msg.content.toLowerCase();
-      return (content.includes('here') || content.includes('these') || content.includes('stuck on')) &&
-             (content.includes('verification') || content.includes('tasks') || content.includes('show'));
-    });
-    
-    if (userOfferedHelp && hasLinkContext) {
-      console.log('Conditions met - showing button!');
-      setShowingButton(true);
-    }
-  }, [messages, showingButton]);
   
   return (
     <div className="flex flex-col h-full">
