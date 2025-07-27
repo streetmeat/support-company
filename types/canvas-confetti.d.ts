@@ -13,17 +13,17 @@ declare module 'canvas-confetti' {
       y?: number;
     };
     colors?: string[];
-    shapes?: Array<'square' | 'circle'>;
+    shapes?: string[];
     scalar?: number;
     zIndex?: number;
     disableForReducedMotion?: boolean;
   }
 
-  interface confetti {
-    (options?: Options): Promise<null> | null;
-    reset(): void;
+  interface ConfettiFunction {
+    (options?: Options): Promise<null>;
+    reset: () => void;
   }
 
-  const confetti: confetti;
+  const confetti: ConfettiFunction;
   export default confetti;
 }
