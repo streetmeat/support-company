@@ -88,10 +88,10 @@ export default function HomePage() {
                       <p className="text-[#FFB500]">24/7 availability</p>
                     </div>
                     <a 
-                      href="tel:541-843-8757"
+                      href="tel:+1-541-843-8757"
                       className="inline-block px-8 py-3 bg-[#FFB500] text-[#351C15] font-medium text-lg rounded hover:bg-[#FFC833] transition-colors shadow-sm"
                     >
-                      541-843-8757
+                      +1-541-843-8757
                     </a>
                   </div>
 

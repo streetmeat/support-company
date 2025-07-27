@@ -9,7 +9,11 @@ export const metadata: Metadata = {
   title: 'Support Company - We Support. Period.',
   description: 'Professional support services with cutting-edge AI assistance.',
   icons: {
-    icon: '/icon.svg',
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    shortcut: '/icon.svg',
+    apple: '/icon.svg',
   },
 };
 
