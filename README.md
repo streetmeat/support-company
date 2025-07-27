@@ -1,18 +1,18 @@
 <p align="center">
-  <img src="public/desktoplogo.png" alt="Support Company" width="400" />
+  <img src="public/desktoplogo.png" alt="Support Company" width="700" />
 </p>
 
 <p align="center">
   <em>A satirical AI support experience where the tables are turned - AI agents desperately need YOUR help to solve puzzles they can't handle.</em>
 </p>
 
-## 🏆 Hackathon Submission
+## Hackathon Submission
 
 **Hackathon**: [CS Girlies Hacks 2025](https://csgirlies.devpost.com)  
 **Project**: Support Company  
 **Demo**: [support-company.org](https://support-company.org)
 
-## 📖 About
+## About
 
 Support Company is a comedy project that exploits AI's inability to make subjective human judgments. Our "support agents" start professionally but quickly devolve into anxiety, begging users to help them solve image-based verification tasks that only humans can complete.
 
@@ -26,7 +26,7 @@ Support Company is a comedy project that exploits AI's inability to make subject
    - Picking the "f-boy" (subjective social judgment)
    - Selecting the "cutest" image (aesthetic preference)
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Framework**: Next.js 14 (App Router)
 - **AI**: OpenRouter (gpt-4o-mini)
@@ -36,7 +36,7 @@ Support Company is a comedy project that exploits AI's inability to make subject
 - **Hosting**: Vercel
 - **Analytics**: Vercel KV (optional)
 
-## 🚀 Setup
+## Setup
 
 1. Clone the repository:
 ```bash
@@ -66,7 +66,7 @@ npm run dev
 
 6. Open [http://localhost:3000](http://localhost:3000)
 
-## 🔑 Environment Variables
+## Environment Variables
 
 | Variable | Required | Description |
 |----------|----------|-------------|
@@ -94,7 +94,7 @@ support-company/
 └── data/            # Puzzle manifest
 ```
 
-## 🎯 Key Features
+## Key Features
 
 - **Natural AI Conversation**: Responds intelligently while showing authentic anxiety
 - **Progressive Story**: Emotional escalation from professional to desperate
@@ -122,20 +122,20 @@ vercel
 - Under $5 OpenRouter credits ✓
 - Makes judges laugh (pending...)
 
-## 🤝 Contributing
+## Contributing
 
 This is a hackathon project created for comedy and demonstration purposes. Feel free to fork and create your own variations!
 
-## 🙏 Credits
+## Credits
 
 - Initial scaffold from [Vercel AI Chatbot](https://github.com/vercel/ai-chatbot)
 - Heavily modified for Support Company's unique experience
 - All puzzle logic, story progression, and comedy elements are original
 
-## 📜 License
+## License
 
 MIT License - See [LICENSE](LICENSE) file
 
 ---
 
-Built with ❤️ and anxiety by humans (with a little help from Claude)
+Built with ❤️ and anxiety by humans (with a lot help from Claude)
