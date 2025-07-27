@@ -6,6 +6,12 @@
   <em>A satirical AI support experience where the tables are turned - AI agents desperately need YOUR help to solve puzzles they can't handle.</em>
 </p>
 
+<p align="center">
+  <a href="https://vimeo.com/1104956440">
+    <img src="https://i.vimeocdn.com/video/1957678094-c18e3c9ce38bb0b7dd3cc1fbbf3b8a3be16787d80c45bb3fc67f19ef8eea0c24-d?mw=1200&mh=675" alt="Watch Demo Video" width="600" />
+  </a>
+</p>
+
 ## Hackathon Submission
 
 **Hackathon**: [CS Girlies Hacks 2025](https://csgirlies.devpost.com)  
