@@ -340,11 +340,14 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
       newState.storyProgress = 100; // Force progression
     }
     
-    // Check if agent has explicitly asked for help
+    // Check if agent has explicitly asked for help (must be a clear request)
     const hasAskedForHelp = (
       lowerContent.includes('can you help') ||
+      lowerContent.includes('could you help') ||
+      lowerContent.includes('will you help') ||
       lowerContent.includes('help me') ||
       lowerContent.includes('i need your help') ||
+      lowerContent.includes('i need help') ||
       lowerContent.includes('need your help') ||
       lowerContent.includes('please help') ||
       (lowerContent.includes('help') && lowerContent.includes('?'))
@@ -369,10 +372,12 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
     setConversationState(newState);
     
     // Only show link when:
-    // 1. Agent has asked for help (message 4+) AND is explicitly showing something
+    // 1. Agent has asked for help AND THEN is showing something (not in same message)
     // 2. OR force show by message 7
-    const hasAskedAndShowing = newState.hasAskedForHelp && shouldShowLink && assistantMessageCount >= 4;
-    const forceShowAtMessage7 = assistantMessageCount >= 6 && !showingButton && !puzzleStarted;
+    const hasAskedPreviously = conversationState.hasAskedForHelp; // From previous messages
+    const isShowingNow = shouldShowLink && !hasAskedForHelp; // Showing but not asking in same message
+    const hasAskedAndShowing = hasAskedPreviously && isShowingNow && assistantMessageCount >= 4;
+    const forceShowAtMessage7 = assistantMessageCount >= 6 && !showingButton && !puzzleStarted && conversationState.hasAskedForHelp;
     
     if (!showingButton && !puzzleStarted && !linkMessageId &&
         (hasAskedAndShowing || forceShowAtMessage7)) {
