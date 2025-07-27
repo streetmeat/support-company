@@ -8,6 +8,9 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Support Company - We Support. Period.',
   description: 'Professional support services with cutting-edge AI assistance.',
+  icons: {
+    icon: '/icon.svg',
+  },
 };
 
 export const viewport = {
