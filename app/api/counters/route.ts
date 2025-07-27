@@ -6,18 +6,16 @@ export const runtime = 'edge';
 export async function GET() {
   try {
     // Get counters from Vercel KV
-    const [agentsSaved, ticketsInLimbo] = await Promise.all([
-      kv.get<number>('agents-saved') || 0,
-      kv.get<number>('tickets-limbo') || 0,
-    ]);
+    const agentsSaved = await kv.get<number>('agents-saved');
+    const ticketsInLimbo = await kv.get<number>('tickets-limbo');
     
     return NextResponse.json({
-      agentsSaved,
-      ticketsInLimbo,
+      agentsSaved: agentsSaved ?? 0,
+      ticketsInLimbo: ticketsInLimbo ?? 0,
     });
   } catch (error) {
     // If KV is not configured (local dev), return mock data
-    console.log('KV not configured, returning mock counters');
+    console.error('KV error:', error);
     return NextResponse.json({
       agentsSaved: 42,
       ticketsInLimbo: 126,
