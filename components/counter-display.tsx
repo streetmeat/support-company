@@ -2,38 +2,14 @@
 
 import { useState, useEffect } from 'react';
 
-interface CounterDisplayProps {
-  conversationId?: string;
-  onComplete?: () => void;
-}
-
-export default function CounterDisplay({ conversationId, onComplete }: CounterDisplayProps) {
+export default function CounterDisplay() {
   const [count, setCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
-  const [hasIncremented, setHasIncremented] = useState(false);
 
   useEffect(() => {
-    const fetchAndIncrementCounter = async () => {
+    const fetchCounter = async () => {
       try {
-        // Check if we've already incremented for this conversation
-        const storageKey = conversationId ? `supportcompany-completed-${conversationId}` : null;
-        const alreadyIncremented = storageKey ? sessionStorage.getItem(storageKey) === 'true' : false;
-
-        if (!alreadyIncremented && onComplete) {
-          // Increment the counter
-          const incrementRes = await fetch('/api/counters', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ type: 'agents-saved', increment: 1 })
-          });
-
-          if (incrementRes.ok && storageKey) {
-            sessionStorage.setItem(storageKey, 'true');
-            setHasIncremented(true);
-          }
-        }
-
-        // Fetch the current count
+        // Just fetch the current count - no incrementing here
         const response = await fetch('/api/counters');
         const data = await response.json();
         setCount(data.agentsSaved || 0);
@@ -45,8 +21,8 @@ export default function CounterDisplay({ conversationId, onComplete }: CounterDi
       }
     };
 
-    fetchAndIncrementCounter();
-  }, [conversationId, onComplete]);
+    fetchCounter();
+  }, []);
 
   if (loading) {
     return (
@@ -64,11 +40,6 @@ export default function CounterDisplay({ conversationId, onComplete }: CounterDi
       <div className="text-lg text-[#5A3A30]">
         agents saved worldwide
       </div>
-      {hasIncremented && (
-        <div className="text-sm text-[#FFB500] mt-2">
-          +1 (including you!)
-        </div>
-      )}
     </div>
   );
 }

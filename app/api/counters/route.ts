@@ -9,6 +9,8 @@ export async function GET() {
     const agentsSaved = await kv.get<number>('agents-saved');
     const ticketsInLimbo = await kv.get<number>('tickets-limbo');
     
+    console.log('KV GET Response:', { agentsSaved, ticketsInLimbo });
+    
     return NextResponse.json({
       agentsSaved: agentsSaved ?? 0,
       ticketsInLimbo: ticketsInLimbo ?? 0,

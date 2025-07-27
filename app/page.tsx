@@ -159,10 +159,7 @@ export default function HomePage() {
               </div>
               
               {/* Counter Display */}
-              <CounterDisplay 
-                conversationId={conversationId} 
-                onComplete={() => {}} 
-              />
+              <CounterDisplay />
               
               {/* Action buttons */}
               <div className="flex justify-center gap-4 mt-8">
