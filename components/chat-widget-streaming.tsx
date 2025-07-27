@@ -504,35 +504,39 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
     const isAfterGreeting = assistantCount === 1 && userCount === 0;
     
     if (isAfterGreeting) {
-      console.log('After greeting - setting up 20s/30s/40s timers');
-      // After greeting: 20s, 30s, 40s progression
+      console.log('After greeting - setting up 15s/30s/45s/60s timers');
+      // After greeting: 15s, 30s, 45s, 60s progression
       const timer1 = setTimeout(() => {
-        console.log('20s timer fired - sending first nudge');
-        setNudgeCount(1);
+        console.log('15s timer fired - sending first nudge');
+        setNudgeCount(0);
         handleStreamingResponse('[IDLE-NUDGE]');
-      }, 20000); // 20s - first panic
+      }, 15000); // 15s - distraction/anxiety shows
       timers.push(timer1);
       
       const timer2 = setTimeout(() => {
         console.log('30s timer fired - sending second nudge');
-        setNudgeCount(2);
+        setNudgeCount(1);
         handleStreamingResponse('[IDLE-NUDGE]');
-      }, 30000); // 30s - more panic with context
+      }, 30000); // 30s - explain the ironic situation
       timers.push(timer2);
       
       const timer3 = setTimeout(() => {
-        console.log('40s timer fired - sending final nudge');
-        setNudgeCount(3);
-        // Force progression before final message
+        console.log('45s timer fired - sending third nudge');
+        setNudgeCount(2);
+        // Mark that help has been asked
         setConversationState(prev => ({
           ...prev,
           hasAskedForHelp: true,
-          hasOfferedToShowImages: true,
           emotionalState: 'desperate'
         }));
+        handleStreamingResponse('[IDLE-NUDGE]');
+      }, 45000); // 45s - desperately ask for help
+      timers.push(timer3);
+      
+      const timer4 = setTimeout(() => {
+        console.log('60s timer fired - sending final nudge with link');
+        setNudgeCount(3);
         // Force link to show with this message
-        setShowingButton(true);
-        setForceShowLink(true);
         handleStreamingResponse('[IDLE-NUDGE]');
         // END SEQUENCE
         setTimeout(() => {
@@ -540,8 +544,8 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
           clearIdleTimers();
           console.log('Final message sent - ending all timers');
         }, 2000);
-      }, 40000); // 40s - desperate with link
-      timers.push(timer3);
+      }, 60000); // 60s - show what they're stuck on
+      timers.push(timer4);
     } else if (userCount > 0) {
       // Normal conversation flow - only if user has actually responded
       const firstDelay = userDismissive ? 3000 : 10000;
