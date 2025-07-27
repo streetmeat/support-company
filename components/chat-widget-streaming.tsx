@@ -350,15 +350,15 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
       (lowerContent.includes('help') && lowerContent.includes('?'))
     );
     
-    // Check if this is a message that should show the link
+    // Check if this is a message that should show the link (more specific phrases)
     const shouldShowLink = (
-      lowerContent.includes('here') || 
-      lowerContent.includes('these') || 
-      lowerContent.includes('stuck on') ||
-      lowerContent.includes('let me') ||
-      lowerContent.includes('show you') ||
-      lowerContent.includes('look at') ||
-      lowerContent.includes('what i mean')
+      lowerContent.includes("here's what") || 
+      lowerContent.includes("here are") || 
+      lowerContent.includes("let me show") ||
+      lowerContent.includes("let me just show") ||
+      lowerContent.includes("show you what") ||
+      lowerContent.includes("look at this") ||
+      lowerContent.includes("these are the")
     );
     
     // Track if agent has asked for help
@@ -368,15 +368,14 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
     
     setConversationState(newState);
     
-    // Force link showing by message 5 (after help request) or message 7 (regardless)
-    const forceShowAfterHelp = newState.hasAskedForHelp && assistantMessageCount >= 4 && !showingButton && !puzzleStarted;
+    // Only show link when:
+    // 1. Agent has asked for help (message 4+) AND is explicitly showing something
+    // 2. OR force show by message 7
+    const hasAskedAndShowing = newState.hasAskedForHelp && shouldShowLink && assistantMessageCount >= 4;
     const forceShowAtMessage7 = assistantMessageCount >= 6 && !showingButton && !puzzleStarted;
     
-    // Show link when:
-    // 1. Agent has asked for help AND is now showing what they need help with
-    // 2. OR force show by message 7
     if (!showingButton && !puzzleStarted && !linkMessageId &&
-        ((newState.hasAskedForHelp && shouldShowLink) || forceShowAfterHelp || forceShowAtMessage7)) {
+        (hasAskedAndShowing || forceShowAtMessage7)) {
       console.log('Setting showing button to true!', { 
         hasRevealedProblem: newState.hasRevealedProblem,
         hasAskedForHelp: newState.hasAskedForHelp, 
