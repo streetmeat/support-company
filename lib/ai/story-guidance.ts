@@ -206,7 +206,7 @@ export const getIdleNudgeGuidance = (nudgeCount: number): string => {
     "Getting desperate now. Explicitly ask 'can you help me?' Explain you need human judgment for these visual tasks. Make it clear you NEED their help.",
     
     // 60s - show what you're stuck on
-    "Final desperation. They haven't responded but you can't wait. Show them what you're stuck on. Let them see the verification tasks you need help with."
+    "Final desperation. They haven't responded but you can't wait. You MUST show them now. Say something like 'fuck it, let me just show you' or 'here's what I'm stuck on' - this will trigger the link to appear."
   ];
   
   return nudges[Math.min(nudgeCount, nudges.length - 1)];

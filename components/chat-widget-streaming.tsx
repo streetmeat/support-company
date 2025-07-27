@@ -374,13 +374,15 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
     // Only show link when:
     // 1. Agent has asked for help AND THEN is showing something (not in same message)
     // 2. OR force show by message 7
+    // 3. OR this is the 60s nudge (nudgeCount 3)
     const hasAskedPreviously = conversationState.hasAskedForHelp; // From previous messages
     const isShowingNow = shouldShowLink && !hasAskedForHelp; // Showing but not asking in same message
     const hasAskedAndShowing = hasAskedPreviously && isShowingNow && assistantMessageCount >= 4;
     const forceShowAtMessage7 = assistantMessageCount >= 6 && !showingButton && !puzzleStarted && conversationState.hasAskedForHelp;
+    const isFinalNudge = lowerContent.includes('fuck it') || (lowerContent.includes('show you') && assistantMessageCount >= 4);
     
     if (!showingButton && !puzzleStarted && !linkMessageId &&
-        (hasAskedAndShowing || forceShowAtMessage7)) {
+        (hasAskedAndShowing || forceShowAtMessage7 || isFinalNudge)) {
       console.log('Setting showing button to true!', { 
         hasRevealedProblem: newState.hasRevealedProblem,
         hasAskedForHelp: newState.hasAskedForHelp, 
@@ -472,11 +474,6 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
       return;
     }
     
-    // Don't set any new timers if we've already started the nudge sequence
-    if (nudgeCount > 0 && !isLoading) {
-      console.log('Nudge sequence already started, not setting new timers');
-      return;
-    }
     
     // Clear any existing timers before setting new ones
     clearIdleTimers();
