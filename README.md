@@ -9,7 +9,7 @@
 ## Hackathon Submission
 
 **Hackathon**: [CS Girlies Hacks 2025](https://csgirlies.devpost.com)  
-**Project**: Support Company  
+**Project**: The Support Company  
 **Demo**: [support-company.org](https://support-company.org)
 
 ## About
