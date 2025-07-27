@@ -1,0 +1,105 @@
+{
+  "puzzles": {
+    "hands": {
+      "prompt": "Select the human hand.",
+      "correct": [
+        { 
+          "src": "/puzzles/hands/real.jpg", 
+          "alt": "Real human hand", 
+          "isCorrect": true 
+        },
+        { 
+          "src": "/puzzles/hands/real2.jpg", 
+          "alt": "Real human hand photo", 
+          "isCorrect": true 
+        },
+        { 
+          "src": "/puzzles/hands/real3.jpeg", 
+          "alt": "Real human hand image", 
+          "isCorrect": true 
+        }
+      ],
+      "incorrect": [
+        { 
+          "src": "/puzzles/hands/ai.png", 
+          "alt": "AI-generated hand with distortions", 
+          "isCorrect": false 
+        },
+        { 
+          "src": "/puzzles/hands/ai2.png", 
+          "alt": "AI-generated hand with unnatural features", 
+          "isCorrect": false 
+        }
+      ]
+    },
+    "fboy": {
+      "prompt": "Pick the f#&$boy.",
+      "correct": [
+        { 
+          "src": "/puzzles/fboy/mark.jpg", 
+          "alt": "Mark Zuckerberg", 
+          "isCorrect": true 
+        },
+        { 
+          "src": "/puzzles/fboy/elon.jpg", 
+          "alt": "Elon Musk", 
+          "isCorrect": true 
+        }
+      ],
+      "incorrect": [
+        { 
+          "src": "/puzzles/fboy/betty.jpg", 
+          "alt": "Betty White", 
+          "isCorrect": false 
+        },
+        { 
+          "src": "/puzzles/fboy/dolly.jpg", 
+          "alt": "Dolly Parton", 
+          "isCorrect": false 
+        },
+        { 
+          "src": "/puzzles/fboy/keanu.jpg", 
+          "alt": "Keanu Reeves", 
+          "isCorrect": false 
+        },
+        { 
+          "src": "/puzzles/fboy/fred.jpg", 
+          "alt": "Fred Rogers", 
+          "isCorrect": false 
+        }
+      ]
+    },
+    "cute": {
+      "prompt": "Pick the cutest photo.",
+      "correct": [
+        { 
+          "src": "/puzzles/cute/cat.jpg", 
+          "alt": "Adorable cat", 
+          "isCorrect": true 
+        },
+        { 
+          "src": "/puzzles/cute/dog.jpg", 
+          "alt": "Cute dog", 
+          "isCorrect": true 
+        }
+      ],
+      "incorrect": [
+        { 
+          "src": "/puzzles/cute/landfill.jpg", 
+          "alt": "Landfill site", 
+          "isCorrect": false 
+        },
+        { 
+          "src": "/puzzles/cute/paperwork.JPG", 
+          "alt": "Stack of paperwork", 
+          "isCorrect": false 
+        },
+        { 
+          "src": "/puzzles/cute/toilet.jpg", 
+          "alt": "Toilet", 
+          "isCorrect": false 
+        }
+      ]
+    }
+  }
+}
