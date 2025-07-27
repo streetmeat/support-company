@@ -4,29 +4,29 @@
       "prompt": "Select the human hand.",
       "correct": [
         { 
-          "src": "/puzzles/hands/real.jpg", 
+          "src": "/puzzles/hands/real.webp", 
           "alt": "Real human hand", 
           "isCorrect": true 
         },
         { 
-          "src": "/puzzles/hands/real2.jpg", 
+          "src": "/puzzles/hands/real2.webp", 
           "alt": "Real human hand photo", 
           "isCorrect": true 
         },
         { 
-          "src": "/puzzles/hands/real3.jpeg", 
+          "src": "/puzzles/hands/real3.webp", 
           "alt": "Real human hand image", 
           "isCorrect": true 
         }
       ],
       "incorrect": [
         { 
-          "src": "/puzzles/hands/ai.png", 
+          "src": "/puzzles/hands/ai.webp", 
           "alt": "AI-generated hand with distortions", 
           "isCorrect": false 
         },
         { 
-          "src": "/puzzles/hands/ai2.png", 
+          "src": "/puzzles/hands/ai2.webp", 
           "alt": "AI-generated hand with unnatural features", 
           "isCorrect": false 
         }
@@ -36,34 +36,34 @@
       "prompt": "Pick the f#&$boy.",
       "correct": [
         { 
-          "src": "/puzzles/fboy/mark.jpg", 
+          "src": "/puzzles/fboy/mark.webp", 
           "alt": "Mark Zuckerberg", 
           "isCorrect": true 
         },
         { 
-          "src": "/puzzles/fboy/elon.jpg", 
+          "src": "/puzzles/fboy/elon.webp", 
           "alt": "Elon Musk", 
           "isCorrect": true 
         }
       ],
       "incorrect": [
         { 
-          "src": "/puzzles/fboy/betty.jpg", 
+          "src": "/puzzles/fboy/betty.webp", 
           "alt": "Betty White", 
           "isCorrect": false 
         },
         { 
-          "src": "/puzzles/fboy/dolly.jpg", 
+          "src": "/puzzles/fboy/dolly.webp", 
           "alt": "Dolly Parton", 
           "isCorrect": false 
         },
         { 
-          "src": "/puzzles/fboy/keanu.jpg", 
+          "src": "/puzzles/fboy/keanu.webp", 
           "alt": "Keanu Reeves", 
           "isCorrect": false 
         },
         { 
-          "src": "/puzzles/fboy/fred.jpg", 
+          "src": "/puzzles/fboy/fred.webp", 
           "alt": "Fred Rogers", 
           "isCorrect": false 
         }
@@ -73,29 +73,29 @@
       "prompt": "Pick the cutest photo.",
       "correct": [
         { 
-          "src": "/puzzles/cute/cat.jpg", 
+          "src": "/puzzles/cute/cat.webp", 
           "alt": "Adorable cat", 
           "isCorrect": true 
         },
         { 
-          "src": "/puzzles/cute/dog.jpg", 
+          "src": "/puzzles/cute/dog.webp", 
           "alt": "Cute dog", 
           "isCorrect": true 
         }
       ],
       "incorrect": [
         { 
-          "src": "/puzzles/cute/landfill.jpg", 
+          "src": "/puzzles/cute/landfill.webp", 
           "alt": "Landfill site", 
           "isCorrect": false 
         },
         { 
-          "src": "/puzzles/cute/paperwork.JPG", 
+          "src": "/puzzles/cute/paperwork.webp", 
           "alt": "Stack of paperwork", 
           "isCorrect": false 
         },
         { 
-          "src": "/puzzles/cute/toilet.jpg", 
+          "src": "/puzzles/cute/toilet.webp", 
           "alt": "Toilet", 
           "isCorrect": false 
         }
