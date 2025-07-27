@@ -80,3 +80,16 @@ pids
 *.pid
 *.seed
 *.pid.lock
+
+# Adobe files
+*.ai
+*.psd
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Build artifacts
+dist/
+out/

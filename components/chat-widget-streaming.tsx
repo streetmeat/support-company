@@ -50,6 +50,7 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
   // Idle timer cascade state - moved before handleStreamingResponse
   const idleTimersRef = useRef<NodeJS.Timeout[]>([]);
   const [nudgeCount, setNudgeCount] = useState(0);
+  const [idleTimersSet, setIdleTimersSet] = useState(false);
   
   // Refs to access latest state in timers
   const messagesRef = useRef<Message[]>([]);
@@ -453,7 +454,8 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
       hasGreeted, 
       messageCount: messages.length, 
       isLoading,
-      lastMessageRole: messages[messages.length - 1]?.role 
+      lastMessageRole: messages[messages.length - 1]?.role,
+      idleTimersSet 
     });
     
     if (!hasGreeted || messages.length === 0) return;
@@ -474,6 +476,11 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
       return;
     }
     
+    // If idle timers are already set, don't interfere with them
+    if (idleTimersSet) {
+      console.log('Idle timers already running, not resetting');
+      return;
+    }
     
     // Clear any existing timers before setting new ones
     clearIdleTimers();
@@ -502,6 +509,8 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
     
     if (isAfterGreeting) {
       console.log('After greeting - setting up 15s/30s/45s/60s timers');
+      setIdleTimersSet(true); // Mark that timers are set
+      
       // After greeting: 15s, 30s, 45s, 60s progression
       const timer1 = setTimeout(() => {
         console.log('15s timer fired - sending first nudge');
@@ -569,8 +578,14 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
     idleTimersRef.current = timers;
     console.log(`Set ${timers.length} timers`);
     
-    return () => clearIdleTimers();
-  }, [messages.length, hasGreeted, isLoading, puzzleState, hasResigned, clearIdleTimers, nudgeCount]);
+    return () => {
+      if (idleTimersSet) {
+        console.log('Cleaning up idle timers');
+        clearIdleTimers();
+        setIdleTimersSet(false);
+      }
+    };
+  }, [messages.length, hasGreeted, isLoading, puzzleState, hasResigned, clearIdleTimers, idleTimersSet]);
   
   // Initialize conversation only once
   useEffect(() => {
@@ -610,6 +625,7 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
     
     // Clear idle timers on user interaction
     clearIdleTimers();
+    setIdleTimersSet(false); // Reset flag so new timers can be set if needed
     
     // If resigned, reset to allow agent to respond (especially for puzzles)
     if (hasResigned) {
