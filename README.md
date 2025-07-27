@@ -74,7 +74,7 @@ npm run dev
 | `KV_REST_API_URL` | No | Vercel KV URL for analytics |
 | `KV_REST_API_TOKEN` | No | Vercel KV token for analytics |
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 support-company/
@@ -102,7 +102,7 @@ support-company/
 - **Idle Behavior**: Nudges at 15s, 30s, 45s, resignation at 60s
 - **Single-Page Experience**: Chat persists throughout all interactions
 
-## 🏗 Build & Deploy
+## Build & Deploy
 
 ```bash
 # Build for production
@@ -114,13 +114,6 @@ npm start
 # Deploy to Vercel
 vercel
 ```
-
-## 📊 Success Metrics
-
-- Ship by Sunday 17:00 EDT ✓
-- Lighthouse accessibility score ≥ 90 ✓
-- Under $5 OpenRouter credits ✓
-- Makes judges laugh (pending...)
 
 ## Contributing
 
