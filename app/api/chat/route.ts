@@ -146,7 +146,11 @@ ${messages.filter((m: any) => m.role === 'assistant').length < 3 ? 'Let your pro
   messages.filter((m: any) => m.role === 'assistant').length < 7 ? 'Time to ask for help directly. Make your need clear.' :
   'Final desperation. Show them what you\'re stuck on.'}
 
-REMEMBER: Respond naturally to what the user says. Don't follow a script - let the conversation flow while hitting the emotional beats.
+REMEMBER: 
+- Respond naturally to what the user says
+- ALWAYS use [MULTI] to break thoughts into 2-4 short messages
+- Each message = 1-2 sentences MAX
+- Think panic texting, not explanations
 
 ${conversation.linkShown && !conversation.puzzleOpened ? 'CRITICAL: You already showed the verification link! Do NOT show it again. Instead, beg them to click it or express panic that they haven\'t looked yet.' : ''}
 ${conversation.puzzleOpened ? 'CRITICAL: User has opened the puzzles! Do NOT send the link again. Focus on their progress or wait for their actions.' : ''}
