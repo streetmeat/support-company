@@ -11,6 +11,7 @@ interface ChatWidgetProps {
   onClose: () => void;
   onPuzzleOpen: (puzzleType: string) => void;
   onConversationStart?: (conversationId: string) => void;
+  onNewMessage?: () => void;
 }
 
 // Agent names from PRD
@@ -19,7 +20,7 @@ const AGENT_NAMES = ['Tyler', 'Marcus', 'Sarah', 'Ashley', 'Jordan', 'Alex'];
 // Global instance tracker to prevent multiple mounts
 let activeInstance: string | null = null;
 
-export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversationStart }: ChatWidgetProps) {
+export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversationStart, onNewMessage }: ChatWidgetProps) {
   const instanceId = useRef(nanoid());
   const [conversationId, setConversationId] = useState<string>('');
   const [agentName] = useState(AGENT_NAMES[Math.floor(Math.random() * AGENT_NAMES.length)]);
@@ -141,6 +142,7 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
               createdAt: new Date(),
             };
             setMessages(prev => [...prev, newMessage]);
+            onNewMessage?.(); // Notify parent of new message
             
             // Update conversation state
             updateConversationState(finalContent, messageCount, currentMessageId);
@@ -169,6 +171,7 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
         };
         setMessages(prev => [...prev, finalMessage]);
         messagesRef.current = [...messagesRef.current, finalMessage]; // Update ref too
+        onNewMessage?.(); // Notify parent of new message
         // Skip conversation state update for puzzle events - it's handled by the main chat flow
       }
       
@@ -276,6 +279,7 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
               createdAt: new Date(),
             };
             setMessages(prev => [...prev, newMessage]);
+            onNewMessage?.(); // Notify parent of new message
             
             // Update conversation state
             updateConversationState(finalContent, messageCount, currentMessageId);
@@ -303,6 +307,7 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
           createdAt: new Date(),
         };
         setMessages(prev => [...prev, finalMessage]);
+        onNewMessage?.(); // Notify parent of new message
         updateConversationState(currentContent, messageCount, currentMessageId);
       }
       
@@ -450,6 +455,7 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
         };
         
         setMessages([greetingMessage]);
+        onNewMessage?.(); // Notify parent of new message
         setHasGreeted(true);
         // DO NOT auto-trigger ANYTHING - wait for user input or timeout
       }, 500);
