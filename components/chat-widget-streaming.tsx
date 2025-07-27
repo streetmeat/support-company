@@ -83,8 +83,8 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
     // Clear idle timers when puzzle events happen
     clearIdleTimers();
     
-    // Don't send events if still loading or resigned
-    if (isLoading || hasResigned) return;
+    // Don't send events if still loading (but allow if resigned - puzzle events are important!)
+    if (isLoading) return;
     
     // Send event to chat API to get AI response
     try {
@@ -461,7 +461,7 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
     // Stop spamming after too many messages
     const totalMessages = messages.length;
     const assistantMessageCount = messages.filter(m => m.role === 'assistant').length;
-    if (totalMessages > 20 || assistantMessageCount > 10) {
+    if (totalMessages > 30 || assistantMessageCount > 15) {
       console.log('Message limit reached, stopping auto-follow-ups');
       setHasResigned(true);
       return;
@@ -605,7 +605,7 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
     // Clear idle timers on user interaction
     clearIdleTimers();
     
-    // If resigned, reset to allow agent to respond
+    // If resigned, reset to allow agent to respond (especially for puzzles)
     if (hasResigned) {
       setHasResigned(false);
     }
