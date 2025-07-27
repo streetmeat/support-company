@@ -114,17 +114,18 @@ export async function POST(req: NextRequest) {
       conversationId: conversation.conversationId
     });
     
-    // Update counters if puzzle was solved
-    if (correct) {
+    // Check if all puzzles are complete
+    const isComplete = conversation.puzzleState === 'completed';
+    
+    // Update counters only when ALL puzzles are completed
+    if (isComplete && correct) {
       try {
         await kv.incr('agents-saved');
+        console.log('Incremented agents-saved counter for completed session');
       } catch (kvError) {
         console.log('KV not configured, skipping counter update');
       }
     }
-    
-    // Check if all puzzles are complete
-    const isComplete = conversation.puzzleState === 'completed';
     
     return NextResponse.json({
       success: true,

@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ChatWidgetStreaming from '@/components/chat-widget-streaming';
 import PuzzleContainer from '@/components/puzzle-container';
+import CounterDisplay from '@/components/counter-display';
 
 type ViewState = 'landing' | 'puzzle' | 'success';
 
@@ -14,6 +15,12 @@ export default function HomePage() {
   const [currentView, setCurrentView] = useState<ViewState>('landing');
   const [conversationId, setConversationId] = useState<string>('');
   const [chatKey] = useState(() => Date.now()); // Unique key to prevent chat widget remounting
+  
+  // Use ref to track minimized state for callbacks
+  const isMinimizedRef = useRef(isMinimized);
+  useEffect(() => {
+    isMinimizedRef.current = isMinimized;
+  }, [isMinimized]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -151,8 +158,14 @@ export default function HomePage() {
                 </p>
               </div>
               
+              {/* Counter Display */}
+              <CounterDisplay 
+                conversationId={conversationId} 
+                onComplete={() => {}} 
+              />
+              
               {/* Action buttons */}
-              <div className="flex justify-center gap-4">
+              <div className="flex justify-center gap-4 mt-8">
                 <button
                   onClick={() => {
                     const tweetText = encodeURIComponent('I just saved an AI that was having a panick attack! 🤖❤️');
@@ -192,13 +205,18 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
-            className={`fixed bottom-12 right-6 w-full sm:w-96 ${isMinimized ? 'h-[56px]' : 'h-[600px]'} max-w-[calc(100vw-3rem)] sm:max-w-none bg-white rounded-lg shadow-2xl border border-gray-200 z-50 transition-all duration-300`}
+            className={`fixed bottom-12 right-6 w-full sm:w-96 ${isMinimized ? 'h-[56px]' : 'h-[600px]'} max-w-[calc(100vw-3rem)] sm:max-w-none bg-white rounded-lg shadow-2xl border border-gray-200 z-50 transition-all duration-300 ${hasNewMessage && isMinimized ? 'ring-4 ring-red-500 ring-opacity-50' : ''}`}
           >
-            <div className={`p-4 border-b bg-[#FFB500] ${isMinimized ? 'rounded-lg' : 'rounded-t-lg'} ${isMinimized ? 'cursor-pointer' : ''}`} onClick={isMinimized ? () => { setIsMinimized(false); setHasNewMessage(false); } : undefined}>
+            <div className={`p-4 border-b bg-[#FFB500] ${isMinimized ? 'rounded-lg' : 'rounded-t-lg'} ${isMinimized ? 'cursor-pointer' : ''} relative`} onClick={isMinimized ? () => { setIsMinimized(false); setHasNewMessage(false); } : undefined}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <div className={`w-2 h-2 ${hasNewMessage && isMinimized ? 'bg-red-500 animate-pulse' : 'bg-[#351C15]'} rounded-full mr-2`}></div>
                   <h3 className="font-medium text-[#351C15]">Support Chat</h3>
+                  {hasNewMessage && isMinimized && (
+                    <span className="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">
+                      New message!
+                    </span>
+                  )}
                 </div>
                 <div className="flex items-center gap-2">
                   <button 
@@ -222,7 +240,7 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-            {!isMinimized && (
+            <div style={{ display: isMinimized ? 'none' : 'block', height: '100%' }}>
               <ChatWidgetStreaming 
                 key={chatKey} // Prevent remounting
                 onClose={() => setShowChat(false)} 
@@ -232,17 +250,19 @@ export default function HomePage() {
                     console.error('Cannot open puzzle - no conversation ID');
                     return;
                   }
-                  setIsMinimized(true); // Auto-minimize when puzzle opens
                   setCurrentView('puzzle');
                 }}
                 onConversationStart={(id: string) => {
                   setConversationId(id);
                 }}
                 onNewMessage={() => {
-                  setHasNewMessage(true);
+                  console.log('New message received, isMinimized:', isMinimizedRef.current);
+                  if (isMinimizedRef.current) {
+                    setHasNewMessage(true);
+                  }
                 }}
               />
-            )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

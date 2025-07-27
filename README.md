@@ -5,7 +5,6 @@ A satirical AI support experience where the tables are turned - AI agents desper
 ## 🏆 Hackathon Submission
 
 **Project**: Support Company  
-**Category**: Human-Centric AI Comedy  
 **Demo**: [support-company.org](https://support-company.org)
 
 ## 📖 About
@@ -121,6 +120,12 @@ vercel
 ## 🤝 Contributing
 
 This is a hackathon project created for comedy and demonstration purposes. Feel free to fork and create your own variations!
+
+## 🙏 Credits
+
+- Initial scaffold from [Vercel AI Chatbot](https://github.com/vercel/ai-chatbot)
+- Heavily modified for Support Company's unique experience
+- All puzzle logic, story progression, and comedy elements are original
 
 ## 📜 License
 
