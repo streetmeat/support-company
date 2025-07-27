@@ -81,10 +81,6 @@ pids
 *.seed
 *.pid.lock
 
-# Adobe files
-*.ai
-*.psd
-
 # Temporary files
 *.tmp
 *.temp

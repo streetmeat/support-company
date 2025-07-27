@@ -45,7 +45,6 @@ Support Company is a satirical help-desk site that offers vague "support" withou
 |--------------------------------|-------------------------------|
 | Three puzzles per session      | Additional puzzle types       |
 | Static pre-built assets        | Runtime image generation      |
-| PG-13 profanity (toggleable)   | Stronger profanity            |
 | Share-tweet on end-screen      | User auth / profiles          |
 
 ---
@@ -286,19 +285,15 @@ Agent: "Thank you thank you thank you"
   I just rescued a panicking AI at Support Company! 🤖❤️ <url>
   ```
 
-### 6.6 Accessibility & toggles
+### 6.6 Accessibility
 
 | Item               | Decision                                                  |
 |--------------------|-----------------------------------------------------------|
 | Alt-text           | Provided in manifest                                      |
 | Keyboard           | `<fieldset role="radiogroup">` + arrow keys / Space       |
 | Contrast           | CAT/construction palette - yellow, black, white, gray     |
-| Profanity toggle   | `.env ALLOW_PG13=false` → “poseur” replaces “f-boy”       |
 | Language           | English only                                              |
 
-### 6.7 Offline / quota fallback
-If OpenRouter quota is exceeded, chat bubble shows ASCII-art 404:  
-**“Agent experiencing existential downtime. Please refresh later.”**
 
 ---
 

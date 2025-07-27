@@ -24,10 +24,9 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
   const [conversationId, setConversationId] = useState<string>('');
   const [agentName] = useState(AGENT_NAMES[Math.floor(Math.random() * AGENT_NAMES.length)]);
   const [puzzleState, setPuzzleState] = useState<string>('pre');
-  const [showingButton, setShowingButton] = useState(false);
+  const [linkShown, setLinkShown] = useState(false);
   const [linkMessageId, setLinkMessageId] = useState<string | null>(null);
   const [hasGreeted, setHasGreeted] = useState(false);
-  const [forceShowLink, setForceShowLink] = useState(false);
   const [userInput, setUserInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [puzzleStarted, setPuzzleStarted] = useState(false);
@@ -45,17 +44,18 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
     userSentiment: 'neutral',
     storyProgress: 0,
   });
-  const [linkContext, setLinkContext] = useState<string>(''); // Track context for link
   
   // Idle timer cascade state - moved before handleStreamingResponse
   const idleTimersRef = useRef<NodeJS.Timeout[]>([]);
   const [nudgeCount, setNudgeCount] = useState(0);
+  const nudgeCountRef = useRef(0);
   const [idleTimersSet, setIdleTimersSet] = useState(false);
   
   // Refs to access latest state in timers
   const messagesRef = useRef<Message[]>([]);
   const conversationIdRef = useRef<string>('');
   const conversationStateRef = useRef<ConversationState>(conversationState);
+  const linkShownRef = useRef<boolean>(false);
   
   // Update refs when state changes
   useEffect(() => {
@@ -69,6 +69,14 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
   useEffect(() => {
     conversationStateRef.current = conversationState;
   }, [conversationState]);
+  
+  useEffect(() => {
+    linkShownRef.current = linkShown;
+  }, [linkShown]);
+  
+  useEffect(() => {
+    nudgeCountRef.current = nudgeCount;
+  }, [nudgeCount]);
   
   // Clear all idle timers
   const clearIdleTimers = useCallback(() => {
@@ -202,6 +210,15 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
     setIsLoading(true);
     setCurrentStreamingMessage('');
     
+    // Special handling for 60s nudge - prepare to show link
+    const is60sNudge = userMessage === '[IDLE-NUDGE]' && nudgeCountRef.current === 3;
+    console.log('handleStreamingResponse:', { 
+      userMessage, 
+      nudgeCount: nudgeCountRef.current, 
+      is60sNudge, 
+      linkShown: linkShownRef.current 
+    });
+    
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -291,6 +308,29 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
       
       setCurrentStreamingMessage('');
       setStreamingMessageId('');
+      
+      // Force link to show after 60s nudge completes
+      if (is60sNudge && !linkShownRef.current) {
+        // Wait a tick for state to settle
+        setTimeout(() => {
+          console.log('60s nudge completed - forcing link to show');
+          console.log('Current linkShown state:', linkShownRef.current);
+          console.log('Last message ID:', currentMessageId);
+          
+          setLinkShown(true);
+          // Use the last message ID from the streaming
+          setLinkMessageId(currentMessageId);
+          
+          // Mark link as shown in conversation manager
+          if (conversationIdRef.current) {
+            fetch('/api/chat/mark-link-shown', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ conversationId: conversationIdRef.current }),
+            }).catch(console.error);
+          }
+        }, 100);
+      }
     } catch (error) {
       console.error('Streaming error:', error);
     } finally {
@@ -298,100 +338,70 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
     }
   };
   
+  // Simplified deterministic link display logic
+  const shouldShowLinkNow = () => {
+    if (linkShown || puzzleStarted) return false;
+    
+    const assistantMessageCount = messages.filter(m => m.role === 'assistant').length;
+    const userHasResponded = messages.filter(m => m.role === 'user').length > 0;
+    
+    // Rule 1: After help has been asked and we have enough messages
+    if (conversationState.hasAskedForHelp && assistantMessageCount >= 5 && userHasResponded) {
+      return true;
+    }
+    
+    // Rule 2: Force at 60s nudge (nudgeCount 3)
+    if (nudgeCount >= 3) {
+      return true;
+    }
+    
+    return false;
+  };
+  
   // Update conversation state based on message content
   const updateConversationState = (content: string, messageIndex: number, messageId?: string) => {
     const lowerContent = content.toLowerCase();
     const newState = { ...conversationState };
-    
-    // Track story progression
-    if (lowerContent.includes('verification') || lowerContent.includes('tasks') || lowerContent.includes('stuck')) {
-      newState.hasRevealedProblem = true;
-    }
-    
-    // Check for human help mentions (more flexible)
-    if (lowerContent.includes('help') || lowerContent.includes('need') || 
-        lowerContent.includes('stuck') || lowerContent.includes('human') ||
-        lowerContent.includes('struggling') || lowerContent.includes('can\'t')) {
-      newState.hasAskedForHelp = true;
-      newState.emotionalState = 'worried';
-    }
-    
-    // Track emotional escalation - gradual for better storytelling
     const assistantMessageCount = messages.filter(m => m.role === 'assistant').length;
     const userHasResponded = messages.filter(m => m.role === 'user').length > 0;
     
-    // Gradual escalation after user response
-    if (userHasResponded) {
-      if (assistantMessageCount >= 2) {
-        newState.hasRevealedProblem = true;
-      }
-      if (assistantMessageCount >= 3) {
-        newState.emotionalState = 'worried';
-      }
-      if (assistantMessageCount >= 4) {
-        newState.hasAskedForHelp = true;
-        newState.emotionalState = 'desperate';
-      }
+    // Simple story progression based on message count
+    if (assistantMessageCount >= 2) {
+      newState.hasRevealedProblem = true;
     }
     
-    // Force link appearance after enough messages
-    if (assistantMessageCount >= 6 && !showingButton) {
+    if (assistantMessageCount >= 3) {
+      newState.emotionalState = 'worried';
+    }
+    
+    if (assistantMessageCount >= 4) {
       newState.hasAskedForHelp = true;
-      newState.hasOfferedToShowImages = true;
-      newState.storyProgress = 100; // Force progression
+      newState.emotionalState = 'desperate';
     }
     
-    // Check if agent has explicitly asked for help (must be a clear request)
-    const hasAskedForHelp = (
-      lowerContent.includes('can you help') ||
-      lowerContent.includes('could you help') ||
-      lowerContent.includes('will you help') ||
-      lowerContent.includes('help me') ||
-      lowerContent.includes('i need your help') ||
-      lowerContent.includes('i need help') ||
-      lowerContent.includes('need your help') ||
-      lowerContent.includes('please help') ||
-      (lowerContent.includes('help') && lowerContent.includes('?'))
-    );
-    
-    // Check if this is a message that should show the link (more specific phrases)
-    const shouldShowLink = (
-      lowerContent.includes("here's what") || 
-      lowerContent.includes("here are") || 
-      lowerContent.includes("let me show") ||
-      lowerContent.includes("let me just show") ||
-      lowerContent.includes("show you what") ||
-      lowerContent.includes("look at this") ||
-      lowerContent.includes("these are the")
-    );
-    
-    // Track if agent has asked for help
-    if (hasAskedForHelp) {
+    // Check if this message explicitly asks for help
+    if (lowerContent.includes('can you help') ||
+        lowerContent.includes('could you help') ||
+        lowerContent.includes('will you help') ||
+        lowerContent.includes('help me') ||
+        lowerContent.includes('please help') ||
+        lowerContent.includes('i need your help') ||
+        lowerContent.includes('i need help')) {
       newState.hasAskedForHelp = true;
     }
     
     setConversationState(newState);
     
-    // Only show link when:
-    // 1. Agent has asked for help AND THEN is showing something (not in same message)
-    // 2. OR force show by message 7
-    // 3. OR this is the 60s nudge (nudgeCount 3)
-    const hasAskedPreviously = conversationState.hasAskedForHelp; // From previous messages
-    const isShowingNow = shouldShowLink && !hasAskedForHelp; // Showing but not asking in same message
-    const hasAskedAndShowing = hasAskedPreviously && isShowingNow && assistantMessageCount >= 4;
-    const forceShowAtMessage7 = assistantMessageCount >= 6 && !showingButton && !puzzleStarted && conversationState.hasAskedForHelp;
-    const isFinalNudge = lowerContent.includes('fuck it') || (lowerContent.includes('show you') && assistantMessageCount >= 4);
-    
-    if (!showingButton && !puzzleStarted && !linkMessageId &&
-        (hasAskedAndShowing || forceShowAtMessage7 || isFinalNudge)) {
-      console.log('Setting showing button to true!', { 
-        hasRevealedProblem: newState.hasRevealedProblem,
-        hasAskedForHelp: newState.hasAskedForHelp, 
-        shouldShowLink,
-        assistantMessageCount 
+    // Check if we should show link now
+    if (shouldShowLinkNow() && !linkShown) {
+      console.log('Showing link!', { 
+        assistantMessageCount,
+        hasAskedForHelp: newState.hasAskedForHelp,
+        nudgeCount,
+        messageId
       });
-      setShowingButton(true);
-      setLinkContext(content);
+      
+      setLinkShown(true);
       
       // Set the specific message ID that should show the link
       if (messageId) {
@@ -455,7 +465,8 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
       messageCount: messages.length, 
       isLoading,
       lastMessageRole: messages[messages.length - 1]?.role,
-      idleTimersSet 
+      idleTimersSet,
+      linkShown 
     });
     
     if (!hasGreeted || messages.length === 0) return;
@@ -466,6 +477,9 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
     
     // Don't set timers if we're in completed state or already resigned
     if (puzzleState === 'completed' || hasResigned) return;
+    
+    // Don't set more timers if link already shown
+    if (linkShown) return;
     
     // Stop spamming after too many messages
     const totalMessages = messages.length;
@@ -488,7 +502,7 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
     console.log('Setting up idle timers...', { 
       messageCount: messages.length,
       assistantCount: messages.filter(m => m.role === 'assistant').length,
-      showingButton 
+      linkShown 
     });
     
     // Check if user was dismissive
@@ -542,7 +556,13 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
       const timer4 = setTimeout(() => {
         console.log('60s timer fired - sending final nudge with link');
         setNudgeCount(3);
-        // Force link to show with this message
+        // Force help asked state to ensure link shows
+        setConversationState(prev => ({
+          ...prev,
+          hasAskedForHelp: true,
+          emotionalState: 'desperate'
+        }));
+        // This will trigger the link to show via shouldShowLinkNow()
         handleStreamingResponse('[IDLE-NUDGE]');
         // END SEQUENCE
         setTimeout(() => {
@@ -569,9 +589,6 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
           emotionalState: 'desperate'
         }));
         handleStreamingResponse('[IDLE-NUDGE]');
-        setTimeout(() => {
-          setShowingButton(true);
-        }, 2000);
       }, firstDelay + 10000));
     }
     
@@ -585,7 +602,7 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
         setIdleTimersSet(false);
       }
     };
-  }, [messages.length, hasGreeted, isLoading, puzzleState, hasResigned, clearIdleTimers, idleTimersSet]);
+  }, [messages.length, hasGreeted, isLoading, puzzleState, hasResigned, clearIdleTimers, idleTimersSet, linkShown]);
   
   // Initialize conversation only once
   useEffect(() => {
@@ -711,22 +728,8 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
                 .filter(i => i !== -1)
                 .pop();
             
-            // Show link when agent mentions they're providing it
-            const messageContent = message.content.toLowerCase();
-            const isProvidingLink = 
-              messageContent.includes('here\'s') ||
-              messageContent.includes('here is') ||
-              messageContent.includes('here are') ||
-              messageContent.includes('let me show') ||
-              messageContent.includes('show you') ||
-              messageContent.includes('look at') ||
-              messageContent.includes('verification') ||
-              messageContent.includes('bot detection') ||
-              messageContent.includes('tests') ||
-              messageContent.includes('what\'s blocking') ||
-              messageContent.includes('stuck on');
-            
-            const shouldShowLink = showingButton && message.role === 'assistant' && 
+            // Show link on the designated message
+            const shouldShowLink = linkShown && message.role === 'assistant' && 
               message.id === linkMessageId && !puzzleStarted;
             
             return (

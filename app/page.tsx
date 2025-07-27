@@ -26,7 +26,8 @@ export default function HomePage() {
       <header className="bg-[#FFB500] text-[#351C15]">
         <div className="max-w-6xl mx-auto px-6 py-6">
           <div className="flex justify-center items-center">
-            <img src="/supportlogo.png" alt="Support Company" className="h-20" />
+            <img src="/mobilelogo.png" alt="Support Company" className="h-20 sm:hidden" />
+            <img src="/desktoplogo.png" alt="Support Company" className="h-20 hidden sm:block" />
           </div>
         </div>
       </header>
@@ -52,44 +53,52 @@ export default function HomePage() {
                 </p>
               </div>
 
-              {/* Main Action */}
-              <div className="max-w-2xl mx-auto mb-16">
-                <div className="bg-[#5A3A30] rounded-lg p-8 text-center shadow-sm">
-                  <div className="mb-6">
-                    <div className="text-5xl mb-4">💬</div>
-                    <h3 className="text-2xl font-medium mb-2 text-white">Live Support Available</h3>
-                    <p className="text-[#FFB500]">Average wait time: 7 seconds</p>
+              {/* All Support Options in One Row */}
+              <div className="max-w-6xl mx-auto mb-16">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Live Chat */}
+                  <div className="bg-[#5A3A30] rounded-lg p-8 text-center shadow-sm">
+                    <div className="mb-6">
+                      <div className="text-5xl mb-4">💬</div>
+                      <h3 className="text-2xl font-medium mb-2 text-white">Live Support</h3>
+                      <p className="text-[#FFB500]">Average wait time: 7 seconds</p>
+                    </div>
+                    <button 
+                      onClick={() => setShowChat(true)}
+                      className="px-8 py-3 bg-[#FFB500] text-[#351C15] font-medium text-lg rounded hover:bg-[#FFC833] transition-colors shadow-sm"
+                    >
+                      Start Chat
+                    </button>
                   </div>
-                  <button 
-                    onClick={() => setShowChat(true)}
-                    className="px-8 py-3 bg-[#FFB500] text-[#351C15] font-medium text-lg rounded hover:bg-[#FFC833] transition-colors shadow-sm"
-                  >
-                    Start Chat
-                  </button>
-                </div>
-              </div>
 
-              {/* Other Options - Simplified */}
-              <div className="max-w-4xl mx-auto">
-                <p className="text-center text-[#5A3A30] mb-8">Other ways to get help</p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                  <div className="p-6 bg-[#F5F2ED] rounded-lg">
-                    <div className="text-3xl mb-3">📞</div>
-                    <h4 className="font-medium mb-1 text-[#351C15]">Call Us</h4>
-                    <p className="text-[#5A3A30]">1-800-SUPPORT</p>
-                    <p className="text-sm text-[#5A3A30] opacity-75">24/7 availability</p>
+                  {/* Phone */}
+                  <div className="bg-[#5A3A30] rounded-lg p-8 text-center shadow-sm">
+                    <div className="mb-6">
+                      <div className="text-5xl mb-4">📞</div>
+                      <h3 className="text-2xl font-medium mb-2 text-white">Phone Support</h3>
+                      <p className="text-[#FFB500]">24/7 availability</p>
+                    </div>
+                    <a 
+                      href="tel:541-843-8757"
+                      className="inline-block px-8 py-3 bg-[#FFB500] text-[#351C15] font-medium text-lg rounded hover:bg-[#FFC833] transition-colors shadow-sm"
+                    >
+                      541-843-8757
+                    </a>
                   </div>
-                  <div className="p-6 bg-[#F5F2ED] rounded-lg">
-                    <div className="text-3xl mb-3">📧</div>
-                    <h4 className="font-medium mb-1 text-[#351C15]">Email Support</h4>
-                    <p className="text-[#5A3A30]">support@company.com</p>
-                    <p className="text-sm text-[#5A3A30] opacity-75">Response within 24 hours</p>
-                  </div>
-                  <div className="p-6 bg-[#F5F2ED] rounded-lg">
-                    <div className="text-3xl mb-3">📚</div>
-                    <h4 className="font-medium mb-1 text-[#351C15]">Help Center</h4>
-                    <p className="text-[#5A3A30]">Browse articles</p>
-                    <p className="text-sm text-[#5A3A30] opacity-75">Self-service resources</p>
+
+                  {/* Email */}
+                  <div className="bg-[#5A3A30] rounded-lg p-8 text-center shadow-sm">
+                    <div className="mb-6">
+                      <div className="text-5xl mb-4">📧</div>
+                      <h3 className="text-2xl font-medium mb-2 text-white">Email Support</h3>
+                      <p className="text-[#FFB500]">Response within 24 hours</p>
+                    </div>
+                    <a 
+                      href="mailto:hi@support-company.org"
+                      className="inline-block px-8 py-3 bg-[#FFB500] text-[#351C15] font-medium text-lg rounded hover:bg-[#FFC833] transition-colors shadow-sm"
+                    >
+                      Send Email
+                    </a>
                   </div>
                 </div>
               </div>
@@ -144,8 +153,8 @@ export default function HomePage() {
               <div className="flex justify-center gap-4">
                 <button
                   onClick={() => {
-                    const tweetText = encodeURIComponent('I just rescued a panicking AI at Support Company! 🤖❤️');
-                    const url = encodeURIComponent(window.location.href);
+                    const tweetText = encodeURIComponent('I just saved an AI that was having a panick attack! 🤖❤️');
+                    const url = encodeURIComponent('www.support-company.org');
                     window.open(`https://twitter.com/intent/tweet?text=${tweetText}&url=${url}`, '_blank');
                   }}
                   className="px-8 py-3 bg-[#1DA1F2] text-white font-medium text-lg rounded hover:bg-[#1A8CD8] transition-colors shadow-sm"
@@ -168,7 +177,7 @@ export default function HomePage() {
       <footer className="bg-[#351C15] text-white">
         <div className="max-w-6xl mx-auto px-6 py-8">
           <p className="text-center text-sm opacity-75">
-            © 2025 Support Company. We support.
+            © 2025 The Support Company.
           </p>
         </div>
       </footer>
@@ -181,7 +190,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
-            className="fixed bottom-6 right-6 w-full sm:w-96 h-[600px] max-w-[calc(100vw-3rem)] sm:max-w-none bg-white rounded-lg shadow-2xl border border-gray-200 z-50"
+            className="fixed bottom-12 right-6 w-full sm:w-96 h-[600px] max-w-[calc(100vw-3rem)] sm:max-w-none bg-white rounded-lg shadow-2xl border border-gray-200 z-50"
           >
             <div className="p-4 border-b bg-[#FFB500] rounded-t-lg">
               <div className="flex items-center justify-between">

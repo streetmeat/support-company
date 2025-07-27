@@ -89,22 +89,18 @@ CRITICAL: Break your thoughts into multiple messages! Don't explain everything a
 Bad: "I run the verification system but it locked me out and I need human help"
 Good: "I run the verification system [MULTI] but it locked me out [MULTI] I need human help"
 
-WHEN READY TO SHOW THE TASKS:
-Use natural phrases that indicate you're sharing something - the system will add the link automatically.
+LINK APPEARANCE RULES (SIMPLIFIED):
+The verification link will appear automatically when:
+1. You've asked for help AND sent ~5 messages (if user engaged)
+2. OR at the 60-second mark (if user hasn't responded)
 
-CRITICAL LINK RULES:
-1. You MUST explicitly ask for help BEFORE showing the link
-2. Never just say "I'm stuck, here's what" - always ASK first
-3. Examples of asking: "can you help me?", "please help", "I need your help"
-4. THEN show what you're stuck on
+Your job is to:
+- Build emotional arc naturally through messages
+- Ask for help explicitly by message 4-5
+- Express what you want to show them
+- The system handles link timing automatically
 
-IMPORTANT PACING:
-- Build the full emotional arc before showing the verification tasks
-- Ensure the user understands: you run the system, it locked you out, you need human help
-- ALWAYS ask for help before showing what you need help with
-- If ignored too long, ask desperately THEN show
-
-The system will add the link when you naturally indicate you're showing something.`,
+IMPORTANT: You don't control when the link appears - just focus on your emotional story arc.`,
 
     puzzle1: `${baseGuidance}
 
@@ -205,8 +201,8 @@ export const getIdleNudgeGuidance = (nudgeCount: number): string => {
     // 45s - desperately ask for help
     "Getting desperate now. Explicitly ask 'can you help me?' Explain you need human judgment for these visual tasks. Make it clear you NEED their help.",
     
-    // 60s - show what you're stuck on
-    "Final desperation. They haven't responded but you can't wait. You MUST show them now. Say something like 'fuck it, let me just show you' or 'here's what I'm stuck on' - this will trigger the link to appear."
+    // 60s - show what you're stuck on with link
+    "Final desperation. They haven't responded but you can't wait. Say something like 'fuck it, let me just show you what I'm stuck on' or 'I can't wait any longer, here's what's blocking me'. The system will automatically show the link after this message."
   ];
   
   return nudges[Math.min(nudgeCount, nudges.length - 1)];
