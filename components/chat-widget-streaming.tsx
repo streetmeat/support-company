@@ -337,6 +337,7 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
     if (assistantMessageCount >= 6 && !showingButton) {
       newState.hasAskedForHelp = true;
       newState.hasOfferedToShowImages = true;
+      newState.storyProgress = 100; // Force progression
     }
     
     // Check if this is a message that should show the link (very permissive)
@@ -367,12 +368,16 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
       lastUserMessage.includes('help')
     );
     
+    // Force link showing by message 7
+    const forceShowAtMessage7 = assistantMessageCount >= 6 && !showingButton && !puzzleStarted;
+    
     // Balanced link showing:
     // Show link when narrative has developed AND agent is ready to share
     // Typically around message 4-6 when agent asks for help
+    // FORCE show by message 7 regardless
     if (!showingButton && !puzzleStarted && !linkMessageId &&
-        userHasResponded && newState.hasAskedForHelp && shouldShowLink &&
-        assistantMessageCount >= 4) {
+        ((userHasResponded && newState.hasAskedForHelp && shouldShowLink &&
+        assistantMessageCount >= 4) || forceShowAtMessage7)) {
       console.log('Setting showing button to true!', { 
         hasRevealedProblem: newState.hasRevealedProblem,
         hasAskedForHelp: newState.hasAskedForHelp, 
@@ -736,7 +741,7 @@ export default function ChatWidgetStreaming({ onClose, onPuzzleOpen, onConversat
               messageContent.includes('stuck on');
             
             const shouldShowLink = showingButton && message.role === 'assistant' && 
-              (message.id === linkMessageId || (isProvidingLink && !puzzleStarted));
+              message.id === linkMessageId && !puzzleStarted;
             
             return (
             <motion.div
