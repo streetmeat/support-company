@@ -46,7 +46,7 @@ Support Company is a comedy project that exploits AI's inability to make subject
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/support-company.git
+git clone https://github.com/streetmeat/support-company.git
 cd support-company
 ```
 
